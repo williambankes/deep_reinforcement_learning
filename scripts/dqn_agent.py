@@ -2,15 +2,29 @@
 """
 Created on Thu Aug 20 22:02:58 2020
 
+Understand how certain hyperparameters affect the performance of the DQN
+
+- The neural net used
+    - batchNorm included and excluded
+    
+- Number of iterations
+    - Does the DQN stabilise and then unstabilise
+    
+- Apply hyperparameter tuning to the algorithms hyperparameters
+
+
+
 @author: William Bankes
 """
 
 #%%
-from drlAgents import *
+from drlAgents.policy import Policy
+from drlAgents.agent import DQN_Agent
+from drlAgents.logger import Logger
 
 import gym
+import matplotlib.pyplot as plt
 
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -46,7 +60,9 @@ class Net(nn.Module):
         
 env = gym.make('CartPole-v0')
 p = Policy(Net, discount=0.999)
-d = DQN_Agent(env, p, 10_000, 20_000)
-d.train(112)
+d = DQN_Agent(env, p)
+d.train(1000)
 
 d.play()
+
+

@@ -12,13 +12,16 @@ import torch
 
 class DQN_Agent():
     
-    def __init__(self, env, policy, min_mem, max_mem, batch_size=128):
+    def __init__(self, env, policy,
+                 min_mem=10_000, max_mem=20_000,
+                 batch_size=128, target_update = 20):
         
         self.env = env
         self.mem = Replay_Memory(min_mem, max_mem)
         self.policy = policy
         
         self.batch_size = batch_size
+        self.target_update = target_update
                 
     def fill_replay_memory(self):
 
@@ -73,7 +76,7 @@ class DQN_Agent():
                 
             Logger.getInstance().add('ep_reward', ep_reward)
             
-            if (epoch % 20) == 0:
+            if (epoch % self.target_update) == 0:
                 self.policy.update_target()
                 
     def play(self, length=500):
@@ -99,4 +102,4 @@ class DQN_Agent():
         for _ in range(500):
             self.env.render()
             self.env.step(self.env.action_space.sample()) # take a random action
-        env.close()
+        self.env.close()

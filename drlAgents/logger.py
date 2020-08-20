@@ -44,6 +44,9 @@ class Logger:
         else:
             raise Exception("{} does not exist".format(name))
             
+    def get_names(self):
+        return self.__data.keys()
+    
     def clear(self, name=None):
         
         if name is not None:
