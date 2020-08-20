@@ -16,7 +16,7 @@ setup(
       # Needed to actually package something
       packages=['drl_agents'],
       # Needed for dependencies
-      install_requires=['numpy'],
+      install_requires=['numpy', 'torch'],
       # *strongly* suggested for sharing
       version='0.1',
       # The license can be anything you like
