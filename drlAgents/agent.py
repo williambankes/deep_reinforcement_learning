@@ -5,8 +5,8 @@ Created on Thu Aug 20 19:30:23 2020
 @author: William Bankes
 """
 
-from replayMemory import Replay_Memory
-from logger import Logger
+from .replayMemory import Replay_Memory
+from .logger import Logger
 
 import torch
 

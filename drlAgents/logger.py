@@ -7,7 +7,6 @@ Created on Wed Aug 19 20:19:15 2020
 @author: William Bankes
 
 """
-#%%
 
 class Logger:
     
@@ -44,10 +43,23 @@ class Logger:
             return self.__data[name]
         else:
             raise Exception("{} does not exist".format(name))
+            
+    def clear(self, name=None):
         
+        if name is not None:
+            
+            if name in self.__data.keys():    
+                self.__data[name] = list()
+        
+            else:
+                raise Exception("{} does not exist".format(name))
+        else:
+            self.__data = dict()
 
 if __name__ == '__main__':
     for i in range(10):
         Logger.getInstance().add('testing', i)
         
+    print(Logger.getInstance().get('testing'))
+    Logger.getInstance().clear()
     Logger.getInstance().get('testing')

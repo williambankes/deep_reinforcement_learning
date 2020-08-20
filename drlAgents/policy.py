@@ -10,8 +10,8 @@ import torch.nn.functional as F
 
 import random
 import math
-from logger import Logger
 
+from .logger import Logger
 
 class Policy():
     
@@ -38,8 +38,8 @@ class Policy():
         
         self.discount = discount
         self.optimizer = torch.optim.RMSprop(self.active_net.parameters(),
-                                             lr=1e-4,
-                                             momentum=0.5)     
+                                             lr=learning_rate,
+                                             momentum=momentum)     
                 
         self.eps_start = eps_start
         self.eps_end = eps_end
