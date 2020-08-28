@@ -10,7 +10,7 @@ from .logger import Logger
 
 import torch
 
-class DQN_Agent():
+class dqnAgent():
     """
     Implementation of the DQN agent described in the paper 'Playing Atari with 
     Deep Reinforcement Learning'. 
@@ -28,9 +28,6 @@ class DQN_Agent():
     
     target_update -> (int) number of epochs between updates of the target net
     """
-    
-    
-    
     
     
     def __init__(self, env, policy,

@@ -6,8 +6,8 @@ Created on Thu Aug 20 19:17:18 2020
 """
 
 from .replayMemory import Replay_Memory
-from .agent import DQN_Agent
+from .agents import dqnAgent
 from .logger import Logger
-from .policy import Policy
+from .policies import dqnPolicy
 
-__all__ = ['DQN_Agent', 'Policy', 'Logger', 'Replay_Memory']
+__all__ = ['dqnAgent', 'dqnPolicy', 'Logger', 'Replay_Memory']

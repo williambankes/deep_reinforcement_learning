@@ -14,6 +14,10 @@ class Replay_Memory():
     Simple replay_memory class that stores up to max_memory observations from the
     environment. The sampling is currently done at random but a future project
     may want to introduce a more complex method of sampling
+    
+    min_memory -> (int) minimum memory before the memory is 'full'
+    
+    max_memory -> (int) maximum memory before samples popped
     """
     
     
