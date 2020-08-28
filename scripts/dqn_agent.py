@@ -133,7 +133,7 @@ expl_params = {'eps_start':0.9,
                'eps_decay':100}
 
 """
-experiment = Experiment(api_key = '25VEKCDSomLVKiJhMKvQuM3jN', 
+experiment = Experiment(api_key = '', 
                         project_name='dqn-initial-hyperparameter-exploration',
                         workspace="williambankes")
 experiment.log_parameters(hyper_params)
