@@ -8,7 +8,7 @@ import torch
 import random
 
 
-class Replay_Memory():
+class replayMemory():
     
     """
     Simple replay_memory class that stores up to max_memory observations from the

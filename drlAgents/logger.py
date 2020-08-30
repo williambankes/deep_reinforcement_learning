@@ -2,16 +2,28 @@
 """
 Create a logging class to collate information and
 
-
-- Add comet_ml integration to allow for comet_ml logging throughout the code base
-- Add @property decorator for the getter and setter functions, see below:
-    https://www.freecodecamp.org/news/python-property-decorator/#:~:text=%40property%20is%20a%20built%2Din,of%20the%20use%20of%20%40property!
+- Add comet_ml integration to pass experiement across modules
 
 Created on Wed Aug 19 20:19:15 2020
 
 @author: William Bankes
 
 """
+
+
+def rescale_stepwise(data, duration):
+    
+    current_index = 0
+    rescaled_data = list()
+    
+    for dur in duration:
+        
+        rescaled_data.append(np.mean(data[current_index:dur + current_index]))
+        
+        current_index += dur
+        
+    return rescaled_data
+
 
 class Logger:
     """

@@ -40,8 +40,11 @@ def create_factor_min_exploration(eps_start=0.9, eps_decay=0.99, eps_end=0.01):
     def factor_min_exploration(t):
         
         factor = eps_decay ** t
+        eps_threshold = max(eps_start * factor, eps_end)
         
-        return min(t * factor, eps_end)
+        Logger.getInstance().add('ep_threshold', eps_threshold)
+        
+        return eps_threshold
     
     return factor_min_exploration
 

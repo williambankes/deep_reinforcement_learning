@@ -5,7 +5,7 @@ Created on Thu Aug 20 19:30:23 2020
 @author: William Bankes
 """
 
-from .replayMemory import Replay_Memory
+from .replayMemory import replayMemory
 from .logger import Logger
 
 import torch
@@ -35,7 +35,7 @@ class dqnAgent():
                  batch_size=128, target_update=20):
         
         self.env = env
-        self.mem = Replay_Memory(min_mem, max_mem)
+        self.mem = replayMemory(min_mem, max_mem)
         self.policy = policy
         
         self.batch_size = batch_size
@@ -111,24 +111,32 @@ class dqnAgent():
                 
                 
                 
-    def play(self, length=500):
+    def play(self, length=500, output=False):
         """
         Simulate and render an environment from the beginning with the current policy
         providing greedy actions.
         
         length -> (int) run time of the simulation
+        
+        output -> (rgb_array) return the frames as an rgb_array of values that can
+                    be plotted. (Might be more fitting to use the Logger)
         """        
         
         done = False
         state = self.env.reset()        
-                
+        frames = list()        
+        
         for _ in range(length):
-            self.env.render()          
+            if output:
+                frames.append(self.env.render('rgb_array'))
+            else:
+                self.env.render()
             
             action = self.policy.action(torch.tensor(state, dtype=torch.float))           
             state, reward, done, _ = self.env.step(action)
             
         self.env.close()
+        return frames
         
     def play_random(self, length=500):
         """
