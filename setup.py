@@ -15,5 +15,5 @@ setup(
       author_email='williamjamesbankes@gmail.com',
       packages=['drlAgents'],
       install_requires=['numpy', 'torch'],
-      description='An example of a python package from pre-existing code'     
+      description='An implementation of Deep Reinforcement Learning Algorithms'     
       )
