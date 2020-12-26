@@ -24,6 +24,41 @@ def rescale_stepwise(data, duration):
         
     return rescaled_data
 
+class AgentLogger:
+    
+    def __init__(self):        
+        self.__data = dict()
+    
+    
+    def add(self, name, value):
+        if self.check_name(name):
+            self.__data[name].append(value)
+        else:
+            self.__data[name] = [value]
+            
+
+    def get(self, name):
+        if self.check_name(name):
+            return self.__data[name]
+        else:
+            raise Exception("{} does not exist".format(name))
+        
+    def get_names(self):
+        return self.__data.keys()
+    
+    def clear(self, name=None):
+        if name is not None:    
+            if name in self.__data.keys():    
+                self.__data[name] = list()
+            else:
+                raise Exception("{} does not exist".format(name))
+        else:
+            self.__data = dict()
+            
+    def check_name(self, name):
+        return name in self.__data.keys()
+
+
 
 class Logger:
     """
