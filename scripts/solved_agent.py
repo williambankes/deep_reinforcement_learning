@@ -7,7 +7,7 @@ Created on Sat Aug 29 18:26:22 2020
 #%%
 
 from drlAgents.policies import dqnPolicy
-from drlAgents.agents import dqnAgent
+from drlAgents.agents import Agent
 from drlAgents.explorationFunctions import create_factor_min_exploration
 
 import torch
@@ -75,13 +75,13 @@ env.action_space.seed(env_params['seed'])
 
 p = dqnPolicy(Net, create_factor_min_exploration, expl_params,
               **policy_params)
-d = dqnAgent(env, p, **agent_params)
+d = Agent(env, p, **agent_params)
 
 d.train(200)
 
 #%%
 
-frames = d.play(output=True)
+frames = d.play(length=200, output=True)
 
 #%%
 

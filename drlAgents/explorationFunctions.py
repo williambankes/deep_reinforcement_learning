@@ -13,6 +13,11 @@ import math
 import numpy as np
 
 #%%
+expl_params = {'eps_start':0.95,
+               'eps_end':0.1,
+               'eps_decay':0.995}
+
+
 
 def create_exponential_exploration(eps_start=0.9, eps_end=0.05, eps_decay=1):
     """
@@ -35,7 +40,7 @@ def create_exponential_exploration(eps_start=0.9, eps_end=0.05, eps_decay=1):
     return exponential_exploration
         
 
-def create_factor_min_exploration(eps_start=0.9, eps_decay=0.99, eps_end=0.01):
+def create_factor_min_exploration(eps_start=0.95, eps_decay=0.995, eps_end=0.1):
     
     def factor_min_exploration(t):
         
