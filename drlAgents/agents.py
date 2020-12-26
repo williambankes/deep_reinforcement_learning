@@ -6,11 +6,11 @@ Created on Thu Aug 20 19:30:23 2020
 """
 
 from .replayMemory import replayMemory
-from .logger import Logger
+from .logger import Logger, AgentLogger
 
 import torch
 
-class dqnAgent():
+class Agent():
     """
     Implementation of the DQN agent described in the paper 'Playing Atari with 
     Deep Reinforcement Learning'. 
@@ -37,6 +37,8 @@ class dqnAgent():
         self.env = env
         self.mem = replayMemory(min_mem, max_mem)
         self.policy = policy
+        
+        self.logger = AgentLogger() 
         
         self.batch_size = batch_size
         self.target_update = target_update
@@ -82,6 +84,7 @@ class dqnAgent():
             done = False            
             ep_reward = 0
             state = self.env.reset()
+            rewards = list()
             
             #Limit the length of the simulation
             for i in range(1000):
@@ -92,26 +95,31 @@ class dqnAgent():
                 self.mem.add((state, action, reward, next_state, done))
                                        
                 if done:
-                    Logger.getInstance().add('ep_duration', i)
+                    rewards = list()
+                    #Logger.getInstance().add('ep_duration', i)
                     break
                     
                 state = next_state
                 ep_reward += reward
+                rewards.append(reward)
                 
-                self.policy.train(self.mem.sample(self.batch_size))
+                loss, bellman_target = self.policy.train(self.mem.sample(self.batch_size))
                 
             #Log the episode reward and update the target network
-            Logger.getInstance().add('ep_reward', ep_reward)
+            #Logger.getInstance().add('ep_reward', ep_reward)
+            
+                self.logger.add('loss', loss)
+                self.logger.add('bellman target', bellman_target)
+            
+            
+            #record episode reward
+            self.logger.add('ep_reward', ep_reward)
                         
             if (epoch % self.target_update) == 0:
                 self.policy.update_target()
-                
-                
-                
-                
-                
-                
-    def play(self, length=500, output=False):
+            
+            
+    def play(self, length=500, output=False, random=False):
         """
         Simulate and render an environment from the beginning with the current policy
         providing greedy actions.
@@ -127,30 +135,20 @@ class dqnAgent():
         frames = list()        
         
         for _ in range(length):
+            
             if output:
                 frames.append(self.env.render('rgb_array'))
             else:
                 self.env.render()
             
-            action = self.policy.action(torch.tensor(state, dtype=torch.float))           
+            if random:
+                action = self.env.action_space.sample()
+            else:
+                action = self.policy.action(torch.tensor(state, dtype=torch.float))           
+            
+            
             state, reward, done, _ = self.env.step(action)
             
         self.env.close()
+        
         return frames
-        
-    def play_random(self, length=500):
-        """
-        Simulate and render an environment from the beginning with a random policy
-        providing actions
-
-        length -> (int) run time of the simulation        
-        """
-        
-        
-        self.env.reset()
-        
-        for _ in range(length):
-            self.env.render()
-            self.env.step(self.env.action_space.sample())
-            
-        self.env.close()

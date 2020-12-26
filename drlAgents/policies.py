@@ -135,9 +135,9 @@ class ddqnPolicy(eGreedyPolicy):
  
         loss = F.smooth_l1_loss(state_action_value, rewards)
         
-        with torch.no_grad():
-            Logger.getInstance().add('loss', loss.item())
-            Logger.getInstance().add('bellman_target', torch.mean(rewards).item())
+        #with torch.no_grad():
+            #Logger.getInstance().add('loss', loss.item())
+            #Logger.getInstance().add('bellman_target', torch.mean(rewards).item())
         
         self.optimizer.zero_grad()
         loss.backward()
@@ -150,7 +150,7 @@ class ddqnPolicy(eGreedyPolicy):
         if self.use_learning_decay:
             self.scheduler.step()
             
-        return
+        return loss.item(), torch.mean(rewards).item()
 
 class dqnPolicy(eGreedyPolicy):
     
@@ -210,10 +210,11 @@ class dqnPolicy(eGreedyPolicy):
         #Calculate the state_action_value
         state_action_value = self.func(states).gather(1, actions)
         
-        #Create the next_state_action_values:            
-        rewards[~(done)] += self.discount * self.target_net(next_states[~(done)]).max(1)[0].view(-1,1).float()   
-                  
-             
+                    
+        if not done.all():
+            #Create the next_state_action_values:            
+            rewards[~(done)] += self.discount * self.target_net(next_states[~(done)]).max(1)[0].view(-1,1).float()   
+            
         loss = F.smooth_l1_loss(state_action_value, rewards)
         
         with torch.no_grad():
@@ -229,5 +230,6 @@ class dqnPolicy(eGreedyPolicy):
         self.optimizer.step()
         
         if self.use_learning_decay:
-            self.scheduler.step()        
-        return
+            self.scheduler.step()     
+            
+        return loss.item(), torch.mean(rewards).item()
