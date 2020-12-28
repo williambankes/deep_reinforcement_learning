@@ -6,7 +6,7 @@ Created on Thu Aug 20 19:30:23 2020
 """
 
 from .replayMemory import replayMemory
-from .logger import Logger, AgentLogger
+from .logger import AgentLogger
 
 import torch
 
@@ -92,6 +92,7 @@ class Agent():
                 action = self.policy.action(torch.tensor(state, dtype=torch.float))
                 
                 next_state, reward, done, _ = self.env.step(action)
+                
                 self.mem.add((state, action, reward, next_state, done))
                                        
                 if done:

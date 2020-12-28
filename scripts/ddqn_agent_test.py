@@ -1,18 +1,29 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Dec 24 15:20:57 2020
+Created on Sun Dec 27 11:47:22 2020
 
 @author: William
 """
- 
+
 #%%
 #imports
 
-from drlAgents import DQNAgent
+from drlAgents import DDQNAgent
 import matplotlib.pyplot as plt
 import gym
+import random
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
+#%%
+#Set a seed to compare results
+
+seed = 42
+
+torch.manual_seed(seed)
+random.seed(seed)
+
 
 #%%
 #Create a pytorch neural network:
@@ -42,15 +53,17 @@ class Net(nn.Module):
 #create the environment:
 
 env = gym.make('CartPole-v0')
-agent = DQNAgent(env, Net)   
-agent.train(epochs=300)
+
+#Set the environment's seed:
+env.seed(seed)
+env.action_space.seed(seed)
+
+#Create and train the model:
+agent = DDQNAgent(env, Net)   
+agent.train(epochs=100)
 
 #%%
-print(agent.agent.logger.get_names())
 plt.plot(agent.agent.logger.get('ep_reward'))
 
 #%%
 agent.play(length=100)
-
-
-    

@@ -9,8 +9,6 @@ import torch
 import torch.nn.functional as F
 
 import random
-from .logger import Logger
-
 
 class eGreedyPolicy():
     
@@ -24,7 +22,7 @@ class eGreedyPolicy():
         
         self.func = net()
 
-        self.actions = [i for i in range(self.func.out_layer.out_features)]
+        self.actions = [i for i in range(self.func.out_features)]
         
         self.exploration_func = create_expl_func(**expl_params)
         self.eps_threshold = 1
@@ -50,7 +48,7 @@ class eGreedyPolicy():
                 
         if r > self.eps_threshold:
             action = self.greedy_action(state)
-            
+
         else:
             action = random.sample(self.actions, 1)[0]
             
@@ -65,7 +63,6 @@ class eGreedyPolicy():
         """
         
         self.func.eval()
-        
         with torch.no_grad():
             return self.func(state.unsqueeze(0)).max(1)[1].item() 
         
@@ -134,10 +131,6 @@ class ddqnPolicy(eGreedyPolicy):
         rewards[~(done)] += self.discount * self.target_net(next_states[~(done)]).gather(1, active_actions)
  
         loss = F.smooth_l1_loss(state_action_value, rewards)
-        
-        #with torch.no_grad():
-            #Logger.getInstance().add('loss', loss.item())
-            #Logger.getInstance().add('bellman_target', torch.mean(rewards).item())
         
         self.optimizer.zero_grad()
         loss.backward()
@@ -216,11 +209,7 @@ class dqnPolicy(eGreedyPolicy):
             rewards[~(done)] += self.discount * self.target_net(next_states[~(done)]).max(1)[0].view(-1,1).float()   
             
         loss = F.smooth_l1_loss(state_action_value, rewards)
-        
-        with torch.no_grad():
-            Logger.getInstance().add('loss', loss.item())
-            Logger.getInstance().add('bellman_target', torch.mean(rewards).item())
-        
+                
         self.optimizer.zero_grad()
         loss.backward()
      
