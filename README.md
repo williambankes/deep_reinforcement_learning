@@ -4,43 +4,42 @@ An implementation of deep reinforcement learning algorithms.
 
 ## Example
 
+The following code is an example of how the package can be used to train an agent on the Cartpole environment. The default hyperparameter values are setup to return good results on this environment.
+
 ```
-policy_params = {
-        'discount':0.999,
-        'learning_rate': 0.0001,
-        'momentum':0.5,
-        'use_learning_decay':True,
-        'lr_decay':1
-        }
+from drlAgents import DQNAgent
+import matplotlib.pyplot as plt
+import gym
+import torch.nn as nn
+import torch.nn.functional as F
 
-agent_params = {
-        'min_mem':10_000,
-        'max_mem':50_000,
-        'batch_size':128,
-        'target_update':10,
-        }
+class Net(nn.Module):
 
-env_params = {
-        'env_string':'CartPole-v0',
-        'seed':42}
-
-expl_params = {'eps_start':0.9,
-               'eps_end':0.1,
-               'eps_decay':0.995}
-
+    def __init__(self):
+        super(Net, self).__init__()
+        
+        a = 20
+        self.out_features = 2
+        
+        self.in_layer = nn.Linear(4,a)
+        self.h1 = nn.Linear(a,a)
+        self.bn1 = nn.BatchNorm1d(a)
+        self.h2 = nn.Linear(a,a)
+        self.bn2 = nn.BatchNorm1d(a)
+        self.out_layer = nn.Linear(a,2)
+    
+    def forward(self, x):
+        x = F.relu(self.in_layer(x))
+        x = F.relu(self.bn1(self.h1(x)))
+        x = F.relu(self.bn2(self.h2(x)))
+        return self.out_layer(x)
 
 env = gym.make('CartPole-v0')
-p = dqnPolicy(Net, create_factor_min_exploration, expl_params,
-              **policy_params)
-d = dqnAgent(env, p, **agent_params)
+agent = DQNAgent(env, Net)   
+agent.train(epochs=300)
 
-d.train(200)
+agent.play(length=100)
 ```
-## Requirements:
-- torch
-- numpy
-- random
-(TODO: provide exact versionning)
 
 ## Results and Comments:
 
