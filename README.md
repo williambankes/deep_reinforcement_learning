@@ -20,19 +20,23 @@ class Net(nn.Module):
         
         a = 20
         self.out_features = 2
+        self.in_features = 4
         
-        self.in_layer = nn.Linear(4,a)
-        self.h1 = nn.Linear(a,a)
-        self.bn1 = nn.BatchNorm1d(a)
-        self.h2 = nn.Linear(a,a)
-        self.bn2 = nn.BatchNorm1d(a)
-        self.out_layer = nn.Linear(a,2)
+        self.feature_layers = nn.Sequential(
+            nn.Linear(self.in_features, a),
+            nn.BatchNorm1d(a),
+            nn.ReLU(),
+            nn.Linear(a, a),
+            nn.BatchNorm1d(a),
+            nn.ReLU(),
+            nn.Linear(a, a),
+            nn.BatchNorm1d(a),
+            nn.ReLU(),
+            nn.Linear(a, 2)
+        )
     
     def forward(self, x):
-        x = F.relu(self.in_layer(x))
-        x = F.relu(self.bn1(self.h1(x)))
-        x = F.relu(self.bn2(self.h2(x)))
-        return self.out_layer(x)
+        return self.feature_layers(x)
 
 env = gym.make('CartPole-v0')
 agent = DQNAgent(env, Net)   
